@@ -18,7 +18,7 @@ model User {
   username   String   @unique
   email      String   @unique
   password   String
-  type       UserType
+  type       UserType @default(CITIZEN)
   localityId String
   locality   Locality @relation(fields: [localityId], references: [id], onDelete: Cascade)
   issues     Issue[]  // One user can create multiple issues
