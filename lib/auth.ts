@@ -20,6 +20,7 @@ export const NEXT_AUTH_CONFIG = {
         // Find user in the database
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
+          include: { locality: true }, 
         });
 
         if (!user) {
@@ -43,7 +44,8 @@ export const NEXT_AUTH_CONFIG = {
           email: user.email,
           name: user.username, // Add the 'name' field here, you can use username if name is not in the DB
           type: user.type,
-          localityId: user.localityId, // Ensure localityId is passed
+          localityId: user.locality.id, // Ensure localityId is passed
+          localityName: user.locality.name
         };
       },
     }),
@@ -55,6 +57,7 @@ export const NEXT_AUTH_CONFIG = {
         token.uid = user.id;
         token.username = user.username; // Add the 'username' field to the token
         token.localityId = user.localityId; // Store localityId in the token
+        token.localityName = user.localityName;
       }
       return token;
     },
@@ -63,6 +66,7 @@ export const NEXT_AUTH_CONFIG = {
         session.user.id = token.uid;
         session.user.username = token.username; // Ensure 'username' is in the session
         session.user.localityId = token.localityId; // Use 'localityId' from the token
+        session.user.localityName = token.localityName;
       }
       return session;
     },
