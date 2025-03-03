@@ -1,6 +1,7 @@
 import { NEXT_AUTH_CONFIG } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
   const session = await getServerSession(NEXT_AUTH_CONFIG);
@@ -17,4 +18,6 @@ export async function GET() {
     localityId: session.user.localityId,
     localityName: session.user.localityName
   });
+
 }
+
