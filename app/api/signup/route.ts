@@ -14,16 +14,18 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    let newlocality = locality.toLowerCase();
+
     // First, check if the locality exists
     let localityRecord = await prisma.locality.findUnique({
-      where: { name: locality },
+      where: { name: newlocality },
     });
 
     // If the locality doesn't exist, create it
     if (!localityRecord) {
       localityRecord = await prisma.locality.create({
         data: {
-          name: locality,
+          name: newlocality,
         },
       });
     }
