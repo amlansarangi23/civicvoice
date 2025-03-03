@@ -38,7 +38,7 @@ const Signup = () => {
         // On successful signup, navigate to the dashboard or home page
         router.push("/dashboard");
       }
-    } catch (err) {
+    } catch (error:unknown) {
       setError("Signup failed. Please try again.");
     } finally {
       setLoading(false);

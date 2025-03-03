@@ -21,7 +21,7 @@ model User {
   type       UserType @default(CITIZEN)
   localityId String
   locality   Locality @relation(fields: [localityId], references: [id], onDelete: Cascade)
-  issues     Issue[]  // One user can create multiple issues
+  issues     Issue[] // One user can create multiple issues
 }
 
 enum UserType {
@@ -30,10 +30,11 @@ enum UserType {
 }
 
 model Locality {
-  id      String  @id @default(uuid())
-  name    String  @unique
-  users   User[]  // A locality has multiple users
-  issues  Issue[] // A locality has multiple issues
+  id     String  @id @default(uuid())
+  name   String  @unique
+  users  User[] // A locality has multiple users
+  issues Issue[] // A locality has multiple issues
+  tags   Tag[] // A locality has multiple tags
 }
 
 model Issue {
@@ -47,16 +48,17 @@ model Issue {
   description String
   isResolved  Boolean  @default(false)
   upvotes     Int      @default(0)
-  adminReply  String?  // Nullable for unresolved issues
+  adminReply  String? // Nullable for unresolved issues
 
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  locality    Locality @relation(fields: [localityId], references: [id], onDelete: Cascade)
-  tag         Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  locality Locality @relation(fields: [localityId], references: [id], onDelete: Cascade)
+  tag      Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
 }
 
 model Tag {
-  id        String  @id @default(uuid())
-  title     String  @unique
-  issues    Issue[] // One tag can have multiple issues
+  id         String   @id @default(uuid())
+  title      String   @unique
+  issues     Issue[] // One tag can have multiple issues
+  localityId String
+  locality   Locality @relation(fields: [localityId], references: [id], onDelete: Cascade)
 }
-
