@@ -4,10 +4,10 @@ import bcrypt from "bcryptjs"; // Import bcrypt
 
 export async function POST(req: NextRequest) {
   try {
-    const { username, email, password, locality } = await req.json();
+    const { username, email, password, locality, type } = await req.json();
 
     // Validation (ensure all fields are present)
-    if (!username || !email || !password || !locality) {
+    if (!username || !email || !password || !locality || !type) {
       return NextResponse.json(
         { message: "All fields are required." },
         { status: 400 }
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
         email,
         password: hashedPassword, // Save the hashed password
         localityId: localityRecord.id, // Linking the user to the locality
-        type: "CITIZEN", // Default user type
+        type: type, // Default user type
       },
     });
 

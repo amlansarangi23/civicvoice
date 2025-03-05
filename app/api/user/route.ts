@@ -16,7 +16,8 @@ export async function GET() {
     username: session.user.username,
     email: session.user.email,
     localityId: session.user.localityId,
-    localityName: session.user.localityName
+    localityName: session.user.localityName,
+    type: session.user.type
   });
 
 }
