@@ -1,12 +1,17 @@
 "use client";
 import { useEffect, useState } from "react";
 
+enum UserType {
+  CITIZEN, ADMIN
+}
+
 interface UserDetails {
   id: string;
   username: string;
   email: string;
   localityId: string;
   localityName: string;
+  type: UserType;
 }
 
 const Display = () => {
@@ -20,7 +25,10 @@ const Display = () => {
 
         const data = await res.json();
         console.log("User Data:", data);
-        setUserDetails(data);
+        setUserDetails({
+          ...data,
+          type: data.type === "ADMIN" ? UserType.ADMIN : UserType.CITIZEN, 
+        });
       } catch (error) {
         console.error("Error fetching user details:", error);
       }
@@ -45,6 +53,9 @@ const Display = () => {
           </p>
           <p>
             <strong>Locality:</strong> {userDetails.localityName}
+          </p>
+          <p>
+            <strong>Type:</strong> {userDetails.type}
           </p>
         </div>
       ) : (

@@ -1,6 +1,5 @@
-import { Appbar } from "@/components/navbar";
 import { NEXT_AUTH_CONFIG } from "@/lib/auth";
-import { getServerSession } from "next-auth"
+import { getServerSession } from "next-auth";
 import { signIn } from "next-auth/react";
 import Signup from "./SignUp/page";
 import Display from "@/components/Display";
@@ -15,9 +14,8 @@ export default async function Home() {
 
   return (
     <div>
-      <Appbar />
-      <Signup/>
-      <Display/>
+      <Signup />
+      <Display />
     </div>
   );
 }

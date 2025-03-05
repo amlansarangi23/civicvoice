@@ -12,16 +12,18 @@ export async function GET(req : NextRequest){
                 return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
             }
         
-
         
         const tags = await prisma.tag.findMany({
             where:{
                 localityId: session.user.localityId,
+            },
+            include: {
+                issues: true
             }
         })
         return NextResponse.json({
             message: "Tags fetched",
-            tags : tags
+            alltags : tags
         });
         
     }
