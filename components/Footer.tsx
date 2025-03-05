@@ -5,7 +5,7 @@ import { Twitter, Facebook, Instagram, Linkedin } from "lucide-react";
 
 export const Footer = () => {
   return (
-    <footer className="bg-gray-900 text-gray-200 bottom-0 py-8 left-0 right-0">
+    <footer className="bg-gray-900 text-gray-200 absolute bottom-0 py-8 left-0 right-0">
       <div className="max-w-7xl mx-auto px-4">
         {/* Top Section: Branding and Navigation */}
         <div className="flex flex-col md:flex-row justify-between items-center">

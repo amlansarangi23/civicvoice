@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { signIn } from "next-auth/react";
 
 const Signup = () => {
   const [username, setUsername] = useState("");
@@ -41,7 +42,18 @@ const Signup = () => {
       });
 
       if (response.status === 201) {
-        router.push("/dashboard");
+        // Automatically sign in the user with their credentials.
+        const result = await signIn("credentials", {
+          redirect: false,
+          email,
+          password,
+        });
+
+        if (!result?.error) {
+          router.push("/dashboard");
+        } else {
+          setError("Sign in failed after signup. Please try again.");
+        }
       }
     } catch (error: unknown) {
       setError("Signup failed. Please try again.");
@@ -143,8 +155,10 @@ const Signup = () => {
         </form>
 
         <p className="mt-4 text-center text-gray-600">
-          Already have an account? 
-          <a href="/login" className="text-indigo-600 hover:text-indigo-700 font-semibold">Log In</a>
+          Already have an account?{" "}
+          <a href="/signin" className="text-indigo-600 hover:text-indigo-700 font-semibold">
+            Log In
+          </a>
         </p>
       </div>
     </div>
