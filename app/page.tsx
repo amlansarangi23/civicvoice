@@ -1,4 +1,4 @@
-import { Appbar } from "@/components/appbar";
+import { Appbar } from "@/components/navbar";
 import { NEXT_AUTH_CONFIG } from "@/lib/auth";
 import { getServerSession } from "next-auth"
 import { signIn } from "next-auth/react";
