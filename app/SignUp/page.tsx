@@ -2,12 +2,15 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { signIn } from "next-auth/react";
 
 const Signup = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [locality, setLocality] = useState("");
+  const [userType, setUserType] = useState("CITIZEN");
+  const [adminPasskey, setAdminPasskey] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -16,9 +19,13 @@ const Signup = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Basic validation
-    if (!username || !email || !password || !locality) {
+    if (!username || !email || !password || !locality || !userType) {
       setError("All fields are required.");
+      return;
+    }
+
+    if (userType === "ADMIN" && adminPasskey !== "admin123") {
+      setError("Admin not verified.");
       return;
     }
 
@@ -26,19 +33,29 @@ const Signup = () => {
     setError(null);
 
     try {
-      // Send the data to the backend API
       const response = await axios.post("/api/signup", {
         username,
         email,
         password,
         locality,
+        type: userType,
       });
 
       if (response.status === 201) {
-        // On successful signup, navigate to the dashboard or home page
-        router.push("/dashboard");
+        // Automatically sign in the user with their credentials.
+        const result = await signIn("credentials", {
+          redirect: false,
+          email,
+          password,
+        });
+
+        if (!result?.error) {
+          router.push("/dashboard");
+        } else {
+          setError("Sign in failed after signup. Please try again.");
+        }
       }
-    } catch (error:unknown) {
+    } catch (error: unknown) {
       setError("Signup failed. Please try again.");
     } finally {
       setLoading(false);
@@ -101,6 +118,33 @@ const Signup = () => {
             />
           </div>
 
+          <div className="mb-4">
+            <label htmlFor="userType" className="block text-gray-700">User Type</label>
+            <select
+              id="userType"
+              value={userType}
+              onChange={(e) => setUserType(e.target.value)}
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600"
+            >
+              <option value="CITIZEN">CITIZEN</option>
+              <option value="ADMIN">ADMIN</option>
+            </select>
+          </div>
+
+          {userType === "ADMIN" && (
+            <div className="mb-4">
+              <label htmlFor="adminPasskey" className="block text-gray-700">Admin Passkey</label>
+              <input
+                id="adminPasskey"
+                type="password"
+                value={adminPasskey}
+                onChange={(e) => setAdminPasskey(e.target.value)}
+                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                placeholder="Enter Admin Passkey"
+              />
+            </div>
+          )}
+
           <button
             type="submit"
             className="w-full py-2 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 transition duration-200"
@@ -111,8 +155,10 @@ const Signup = () => {
         </form>
 
         <p className="mt-4 text-center text-gray-600">
-          Already have an account? 
-          <a href="/login" className="text-indigo-600 hover:text-indigo-700 font-semibold">Log In</a>
+          Already have an account?{" "}
+          <a href="/signin" className="text-indigo-600 hover:text-indigo-700 font-semibold">
+            Log In
+          </a>
         </p>
       </div>
     </div>
