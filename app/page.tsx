@@ -1,7 +1,7 @@
 import { NEXT_AUTH_CONFIG } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import { signIn } from "next-auth/react";
-import Signup from "./SignUp/page";
+import Signup from "./signup/page";
 import Display from "@/components/Display";
 
 async function getUser() {
@@ -15,7 +15,7 @@ export default async function Home() {
   return (
     <div>
       <Signup />
-      <Display />
+      {/* <Display /> */}
     </div>
   );
 }
