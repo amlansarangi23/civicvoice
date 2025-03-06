@@ -33,7 +33,7 @@ const SignIn = () => {
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-50">
-      <div className="max-w-sm w-full p-8 bg-white shadow-lg rounded-lg">
+      <div className="max-w-sm w-full p-8 bg-white shadow-lg rounded-lg text-slate-800">
         <h2 className="text-2xl font-semibold text-center text-gray-700 mb-6">Sign In</h2>
 
         {error && (

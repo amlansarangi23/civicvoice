@@ -13,10 +13,10 @@ const TagModal = ({ showModal, setShowModal, tagTitle, setTagTitle, handleAddTag
         >
           <X className="h-5 w-5" />
         </button>
-        <h2 className="text-xl font-semibold mb-4">Add New Tag</h2>
+        <h2 className="text-xl text-slate-700 font-semibold mb-4">Add New Tag</h2>
         <form onSubmit={handleAddTag}>
-          <div className="mb-4">
-            <label htmlFor="tagTitle" className="block text-gray-700">
+          <div className="mb-4 text-slate-800">
+            <label htmlFor="tagTitle" className="block text-gray-700 font-semibold mb-2">
               Tag Title
             </label>
             <input

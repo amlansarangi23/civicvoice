@@ -7,6 +7,7 @@ export async function GET(req : NextRequest){
     try{
 
             const session = await getServerSession(NEXT_AUTH_CONFIG);
+            console.log(session)
         
             if (!session || !session.user) {
                 return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
@@ -21,6 +22,8 @@ export async function GET(req : NextRequest){
                 issues: true
             }
         })
+
+        console.log(tags)
         return NextResponse.json({
             message: "Tags fetched",
             alltags : tags
