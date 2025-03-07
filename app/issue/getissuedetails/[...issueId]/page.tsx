@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import axios from 'axios';
-import { format } from 'date-fns';
-import { Loader2, ThumbsUp, CheckCircle, XCircle } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import axios from "axios";
+import { format } from "date-fns";
+import { Loader2, ThumbsUp, CheckCircle, XCircle } from "lucide-react";
 
 interface Issue {
   id: string;
@@ -30,12 +30,14 @@ const IssuePage = () => {
     async function fetchIssue() {
       if (!issueId) return;
       try {
-        const { data } = await axios.get(`/api/issues/getissue?issueId=${issueId}`);
+        const { data } = await axios.get(
+          `/api/issues/getissue?issueId=${issueId}`
+        );
         setIssue(data.issue);
         setError(null);
       } catch (err: any) {
         console.error(err);
-        setError('Failed to fetch issue');
+        setError("Failed to fetch issue");
       } finally {
         setLoading(false);
       }
@@ -55,7 +57,9 @@ const IssuePage = () => {
   if (error || !issue) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <p className="text-red-500 text-lg font-semibold">{error || 'Issue not found'}</p>
+        <p className="text-red-500 text-lg font-semibold">
+          {error || "Issue not found"}
+        </p>
       </div>
     );
   }
@@ -65,16 +69,27 @@ const IssuePage = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-800">{issue.subject}</h1>
-        <span className={`px-3 py-1 rounded-full text-sm font-medium 
-          ${issue.isResolved ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
+        <span
+          className={`px-3 py-1 rounded-full text-sm font-medium 
+          ${
+            issue.isResolved
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
+          }`}
         >
-          {issue.isResolved ? <CheckCircle className="inline-block h-5 w-5 mr-1" /> : <XCircle className="inline-block h-5 w-5 mr-1" />}
-          {issue.isResolved ? 'Resolved' : 'Unresolved'}
+          {issue.isResolved ? (
+            <CheckCircle className="inline-block h-5 w-5 mr-1" />
+          ) : (
+            <XCircle className="inline-block h-5 w-5 mr-1" />
+          )}
+          {issue.isResolved ? "Resolved" : "Unresolved"}
         </span>
       </div>
 
       {/* Created At */}
-      <p className="text-gray-500 text-sm mt-1">Reported on {format(new Date(issue.createdAt), 'dd MMM yyyy, h:mm a')}</p>
+      <p className="text-gray-500 text-sm mt-1">
+        Reported on {format(new Date(issue.createdAt), "dd MMM yyyy, h:mm a")}
+      </p>
 
       {/* Description */}
       <p className="mt-4 text-gray-700 leading-relaxed">{issue.description}</p>
@@ -84,7 +99,10 @@ const IssuePage = () => {
         <h3 className="text-lg font-semibold text-gray-800">Tags:</h3>
         <div className="flex flex-wrap gap-2 mt-2">
           {issue.subTags.map((tag, index) => (
-            <span key={index} className="bg-blue-100 text-blue-700 px-3 py-1 text-sm font-medium rounded-full">
+            <span
+              key={index}
+              className="bg-blue-100 text-blue-700 px-3 py-1 text-sm font-medium rounded-full"
+            >
               #{tag}
             </span>
           ))}

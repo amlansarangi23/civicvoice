@@ -1,41 +1,42 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import axios from 'axios';
-import { ThumbsUp } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import axios from "axios";
+import { ThumbsUp } from "lucide-react";
+import { upvotes } from "@prisma/client";
+import { useSession } from "next-auth/react";
 
 type Issue = {
   id: string;
   subject: string;
   description: string;
-  upvotes: number;
+  upvoters: upvotes[];
 };
 
 const IssuesPage = () => {
+  const { data: session, status } = useSession();
   const router = useRouter();
   const params = useParams();
   let tagId = params.tagId;
-  if (Array.isArray(tagId)) {
-    tagId = tagId.join('/');
-  }
 
   const [issues, setIssues] = useState<Issue[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [loadingUpvote, setLoadingUpvote] = useState<{ [key: string]: boolean }>({}); // Tracks upvote loading state
-  const [upvotedIssues, setUpvotedIssues] = useState<{ [key: string]: boolean }>({}); // Tracks if user has upvoted
+  const [upvoteState, setUpvoteState] = useState<boolean>(false); // Tracks upvote loading state
 
   async function getIssues() {
     if (!tagId) return;
     setLoading(true);
     try {
-      const response = await axios.get(`/api/issues/getallissues?tagId=${tagId}`);
+      const response = await axios.get(
+        `/api/issues/getallissues?tagId=${tagId}`
+      );
       setIssues(response.data.issues);
       setError(null);
     } catch (err: any) {
       console.error(err);
-      setError('Failed to fetch issues');
+      setError("Failed to fetch issues");
     } finally {
       setLoading(false);
     }
@@ -43,42 +44,35 @@ const IssuesPage = () => {
 
   useEffect(() => {
     getIssues();
-  }, [tagId]);
+  }, [tagId, upvoteState]);
 
   const handleAddIssue = () => {
     router.push(`/issue/createissue?tagId=${tagId}`);
   };
 
-  const toggleUpvote = async (issueId: string, currentUpvotes: number) => {
-    if (loadingUpvote[issueId]) return; // Prevent multiple fast clicks
+  const toggleUpvote = async (issueId: string) => {
+    const { data } = await axios.get(`/api/issues/getissue?issueId=${issueId}`);
 
-    setLoadingUpvote((prev) => ({ ...prev, [issueId]: true }));
-
-    const isUpvoted = upvotedIssues[issueId] || false;
-    const updatedVotes = isUpvoted ? currentUpvotes - 1 : currentUpvotes + 1;
+    const d = data?.issue?.upvoters?.find(
+      (upvoter: upvotes) => upvoter.issueId === issueId
+    );
 
     try {
-      // Optimistically update UI
-      setIssues((prevIssues) =>
-        prevIssues.map((issue) =>
-          issue.id === issueId ? { ...issue, upvotes: updatedVotes } : issue
-        )
-      );
-
-      // API call to update upvotes
-      await axios.put(`/api/citizen/votechange`, { issueId, updatedVotes });
-
-      // Update local state
-      setUpvotedIssues((prev) => ({ ...prev, [issueId]: !isUpvoted }));
+      console.log(d);
+      if (d != null) {
+        await axios.delete("/api/citizen/downvote", {
+          data: { issueId: issueId },
+        });
+      } else {
+        console.log(issueId);
+        await axios.post("/api/citizen/upvote", {
+          issueId: issueId,
+        });
+      }
     } catch (error) {
       console.error("Failed to update upvotes", error);
-      setIssues((prevIssues) =>
-        prevIssues.map((issue) =>
-          issue.id === issueId ? { ...issue, upvotes: currentUpvotes } : issue
-        )
-      );
     } finally {
-      setLoadingUpvote((prev) => ({ ...prev, [issueId]: false }));
+      setUpvoteState(!upvoteState);
     }
   };
 
@@ -108,7 +102,9 @@ const IssuesPage = () => {
             className="bg-white shadow-md rounded-lg p-4 border border-gray-200 flex justify-between items-center hover:shadow-lg transition cursor-pointer duration-300"
           >
             <div>
-              <h2 className="text-xl font-bold text-gray-800 mb-2">{issue.subject}</h2>
+              <h2 className="text-xl font-bold text-gray-800 mb-2">
+                {issue.subject}
+              </h2>
               <p className="text-gray-700">{issue.description}</p>
             </div>
 
@@ -116,17 +112,19 @@ const IssuesPage = () => {
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                toggleUpvote(issue.id, issue.upvotes);
+                toggleUpvote(issue.id);
               }}
-              disabled={loadingUpvote[issue.id]}
+              // disabled={loadingUpvote[issue.id]}
               className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-semibold transition ${
-                upvotedIssues[issue.id]
-                  ? 'bg-green-100 text-green-700'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                issue?.upvoters?.find(
+                  (upvoter: upvotes) => upvoter.issueId === issue.id
+                ) != null
+                  ? "bg-green-100 text-green-700"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
             >
-              <ThumbsUp className={`h-5 w-5 ${loadingUpvote[issue.id] ? "animate-pulse" : ""}`} />
-              <span>{issue.upvotes}</span>
+              <ThumbsUp className="h-5 w-5" />
+              <span>{issue.upvoters.length}</span>
             </button>
           </div>
         ))}

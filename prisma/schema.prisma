@@ -22,6 +22,7 @@ model User {
   localityId String
   locality   Locality @relation(fields: [localityId], references: [id], onDelete: Cascade)
   issues     Issue[] // One user can create multiple issues
+  upvotes    upvotes[] // One user can upvote multiple issues
 }
 
 enum UserType {
@@ -49,10 +50,19 @@ model Issue {
   isResolved  Boolean  @default(false)
   upvotes     Int      @default(0)
   adminReply  String? // Nullable for unresolved issues
+  upvoters upvotes[]
 
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   locality Locality @relation(fields: [localityId], references: [id], onDelete: Cascade)
   tag      Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+}
+
+model upvotes{
+  userId String
+  issueId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  issue Issue @relation(fields: [issueId], references: [id], onDelete: Cascade)
+   @@id([issueId, userId])
 }
 
 model Tag {
