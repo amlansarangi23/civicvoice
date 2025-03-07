@@ -14,6 +14,9 @@ export async function GET(req : NextRequest){
         const issue = await prisma.issue.findFirst({
             where:{
                 id: issueId
+            },
+            include:{
+                upvoters: true,
             }
         })
         return NextResponse.json({

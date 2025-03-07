@@ -1,22 +1,23 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-import axios from 'axios';
+import React, { useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import axios from "axios";
+import { X } from "lucide-react";
 
 const CreateIssuePage = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const tagId = searchParams.get('tagId') || '';
+  const tagId = searchParams.get("tagId") || "";
 
-  const [subject, setSubject] = useState('');
-  const [description, setDescription] = useState('');
+  const [subject, setSubject] = useState("");
+  const [description, setDescription] = useState("");
   const [subTags, setSubTags] = useState<string[]>([]);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleAddSubtag = () => {
-    setSubTags([...subTags, '']);
+    setSubTags([...subTags, ""]);
   };
 
   const handleSubtagChange = (index: number, value: string) => {
@@ -30,12 +31,12 @@ const CreateIssuePage = () => {
     setLoading(true);
     try {
       const body = { subject, description, tagId, subTags };
-      const response = await axios.post('/api/citizen/createissue', body);
+      const response = await axios.post("/api/citizen/createissue", body);
       console.log(response.data);
       router.push(`/tag/${tagId}`);
     } catch (err: any) {
       console.error(err);
-      setError('Error creating issue');
+      setError("Error creating issue");
     } finally {
       setLoading(false);
     }
@@ -43,10 +44,14 @@ const CreateIssuePage = () => {
 
   return (
     <div className="max-w-lg mx-auto my-10 p-6 bg-white rounded shadow text-black">
+      <X onClick={() => router.push(`/tag/${tagId}`)} className="float-end hover:bg-slate-500 rounded-full transition duration-150 cursor-pointer" />
       <h1 className="text-3xl font-semibold text-center mb-6">Create Issue</h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label htmlFor="subject" className="block text-gray-700 font-medium mb-2">
+          <label
+            htmlFor="subject"
+            className="block text-gray-700 font-medium mb-2"
+          >
             Subject:
           </label>
           <input
@@ -59,7 +64,10 @@ const CreateIssuePage = () => {
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="description" className="block text-gray-700 font-medium mb-2">
+          <label
+            htmlFor="description"
+            className="block text-gray-700 font-medium mb-2"
+          >
             Description:
           </label>
           <textarea
@@ -100,7 +108,7 @@ const CreateIssuePage = () => {
             disabled={loading}
             className="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 transition disabled:opacity-50"
           >
-            {loading ? 'Submitting...' : 'Submit Issue'}
+            {loading ? "Submitting..." : "Submit Issue"}
           </button>
         </div>
       </form>
