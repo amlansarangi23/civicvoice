@@ -5,6 +5,7 @@ import { useState, useRef, useEffect } from "react";
 import { Bell, User, Menu, X } from "lucide-react";
 import Link from "next/link";
 
+
 export const Navbar = () => {
   const { data: session, status } = useSession();
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -44,6 +45,9 @@ export const Navbar = () => {
 
       {/* Middle: Navigation Tabs (visible on md and up) */}
       <div className="hidden md:flex space-x-6">
+      {session && <Link href="/dashboard" className="text-gray-700 hover:text-blue-600">
+          Dashboard
+        </Link>}
         <Link href="/about" className="text-gray-700 hover:text-blue-600">
           About Us
         </Link>
