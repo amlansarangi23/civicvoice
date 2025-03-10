@@ -5,7 +5,6 @@ import { useState, useRef, useEffect } from "react";
 import { Bell, User, Menu, X } from "lucide-react";
 import Link from "next/link";
 
-
 export const Navbar = () => {
   const { data: session, status } = useSession();
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -15,7 +14,10 @@ export const Navbar = () => {
   // Close user dropdown if clicked outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setDropdownOpen(false);
       }
     };
@@ -45,9 +47,11 @@ export const Navbar = () => {
 
       {/* Middle: Navigation Tabs (visible on md and up) */}
       <div className="hidden md:flex space-x-6">
-      {session && <Link href="/dashboard" className="text-gray-700 hover:text-blue-600">
-          Dashboard
-        </Link>}
+        {session && (
+          <Link href="/dashboard" className="text-gray-700 hover:text-blue-600">
+            Dashboard
+          </Link>
+        )}
         <Link href="/about" className="text-gray-700 hover:text-blue-600">
           About Us
         </Link>
@@ -89,7 +93,7 @@ export const Navbar = () => {
                 <ul>
                   <li>
                     <Link
-                      href="/issues"
+                      href="/citizenissues"
                       className="block px-4 py-2 text-slate-700 hover:bg-gray-100"
                     >
                       Issues
