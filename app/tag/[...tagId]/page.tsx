@@ -23,7 +23,7 @@ const IssuesPage = () => {
   const [issues, setIssues] = useState<Issue[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [upvoteState, setUpvoteState] = useState<boolean>(false); // Tracks upvote loading state
+  const [upvoteState, setUpvoteState] = useState<boolean>(false);
 
   async function getIssues() {
     if (!tagId) return;
@@ -54,7 +54,8 @@ const IssuesPage = () => {
     const { data } = await axios.get(`/api/issues/getissue?issueId=${issueId}`);
 
     const d = data?.issue?.upvoters?.find(
-      (upvoter: upvotes) => upvoter.issueId === issueId
+      (upvoter: upvotes) =>
+        upvoter.issueId === issueId && upvoter.userId === session?.user?.id
     );
 
     try {
@@ -117,7 +118,9 @@ const IssuesPage = () => {
               // disabled={loadingUpvote[issue.id]}
               className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-semibold transition ${
                 issue?.upvoters?.find(
-                  (upvoter: upvotes) => upvoter.issueId === issue.id
+                  (upvoter: upvotes) =>
+                    upvoter.issueId === issue.id &&
+                    upvoter.userId === session?.user?.id
                 ) != null
                   ? "bg-green-100 text-green-700"
                   : "bg-gray-100 text-gray-600 hover:bg-gray-200"
