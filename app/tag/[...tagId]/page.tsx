@@ -81,12 +81,14 @@ const IssuesPage = () => {
     <div className="max-w-3xl mx-auto px-4 py-8">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-semibold">Issues</h1>
-        <button
-          onClick={handleAddIssue}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition"
-        >
-          ADD ISSUE
-        </button>
+        {session && session.user?.type === "CITIZEN" && (
+          <button
+            onClick={handleAddIssue}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition"
+          >
+            ADD ISSUE
+          </button>
+        )}
       </div>
 
       {loading && <p className="mt-4 text-gray-600">Loading issues...</p>}
