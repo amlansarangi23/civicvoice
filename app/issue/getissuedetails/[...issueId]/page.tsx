@@ -13,8 +13,10 @@ import {
   MessageSquare,
   X,
 } from "lucide-react";
+
 import { upvotes } from "@prisma/client";
 
+import { upvotes } from "@prisma/client";
 interface Issue {
   id: string;
   userId: string;

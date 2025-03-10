@@ -18,7 +18,7 @@ const IssuesPage = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
   const params = useParams();
-  let tagId = params.tagId;
+  const tagId = params.tagId;
 
   const [issues, setIssues] = useState<Issue[]>([]);
   const [loading, setLoading] = useState<boolean>(false);

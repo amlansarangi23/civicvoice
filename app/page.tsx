@@ -3,10 +3,12 @@ import React from "react";
 import { Button } from "../components/Button";
 import { Card, CardContent } from "../components/Card";
 import { Mail, Info, ShieldCheck } from "lucide-react";
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
+
 
 
 const HeroSection = () => (
+  
   <section className="flex flex-col items-center justify-center text-center p-10 bg-gray-700">
     <h1 className="text-4xl font-bold mb-4">
       Raise Your Voice, Make an Impact
@@ -14,8 +16,8 @@ const HeroSection = () => (
     <p className="text-lg text-gray-400 mb-6 max-w-xl">
       Join our platform to report and address social grievances effectively.
     </p>
-    <Button className="text-lg px-6 py-3">Sign Up</Button>
-  </section>
+    {/* <Button   className="text-lg px-6 py-3">Sign Up</Button> */}
+      </section>
 );
 
 const FeaturesSection = () => {
@@ -75,9 +77,14 @@ const ContactSection = () => (
 );
 
 export default function LandingPage() {
+  const router = useRouter();
   return (
     <div>
       <HeroSection />
+      <button onClick={()=>{
+      router.push('/signup')
+    }} className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">SIGN UP</button>
+
       <FeaturesSection />
       <AboutSection />
       <ContactSection />
