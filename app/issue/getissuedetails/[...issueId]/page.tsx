@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 
 import { upvotes } from "@prisma/client";
+
 interface Issue {
   id: string;
   userId: string;
