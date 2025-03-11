@@ -15,6 +15,7 @@ const CreateIssuePage = () => {
   const [subTags, setSubTags] = useState<string[]>([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [sensitiveContentError, setSensitiveContentError] = useState(""); // New state
 
   const handleAddSubtag = () => {
     setSubTags([...subTags, ""]);
@@ -29,6 +30,8 @@ const CreateIssuePage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
+    setSensitiveContentError(""); // Clear any previous sensitive content errors
     try {
       const body = { subject, description, tagId, subTags };
       const response = await axios.post("/api/citizen/createissue", body);
@@ -36,7 +39,11 @@ const CreateIssuePage = () => {
       router.push(`/tag/${tagId}`);
     } catch (err: any) {
       console.error(err);
-      setError("Error creating issue");
+      if (err.response && err.response.status === 400) {
+        setSensitiveContentError("Issue contains sensitive content and cannot be created.");
+      } else {
+        setError("Error creating issue");
+      }
     } finally {
       setLoading(false);
     }
@@ -102,6 +109,7 @@ const CreateIssuePage = () => {
           </button>
         </div>
         {error && <p className="text-red-500 mb-4">{error}</p>}
+        {sensitiveContentError && <p className="text-red-500 mb-4">{sensitiveContentError}</p>} {/* Display sensitive content error */}
         <div className="text-center">
           <button
             type="submit"

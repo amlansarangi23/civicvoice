@@ -20,7 +20,7 @@ const IssuesPage = () => {
   const [issues, setIssues] = useState<Issue[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [filterOption, setFilterOption] = useState<string>("resolved");
+  const [filterOption, setFilterOption] = useState<string>("unresolved");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingIssue, setEditingIssue] = useState<Issue | null>(null);
 
@@ -111,7 +111,7 @@ const IssuesPage = () => {
         {filteredIssues.map((issue) => (
           <div
             key={issue.id}
-            className="bg-white shadow-md rounded-lg p-4 border border-gray-200 flex justify-between items-center hover:shadow-lg transition cursor-pointer duration-300"
+            className="bg-white shadow-md rounded-lg p-4 border border-gray-200 flex justify-between items-center hover:shadow-lg transition duration-300"
           >
             <div>
               <h2 className="text-xl font-bold text-gray-800 mb-2">
@@ -148,7 +148,7 @@ const IssuesPage = () => {
         <div className=" text-black fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
             <X
-              onClick={() => router.push("/citizenissues")}
+              onClick={() => setIsModalOpen(false)}
               className="float-end hover:bg-slate-500 rounded-full transition duration-150 cursor-pointer"
             />
             <h2 className="text-xl font-semibold mb-4">Update Issue</h2>
