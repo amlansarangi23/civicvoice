@@ -52,6 +52,9 @@ model Issue {
   adminReply  String? // Nullable for unresolved issues
   upvoters upvotes[]
 
+  imageUrls      String[] // Stores citizen-uploaded images
+  adminImageUrls String[] // Stores admin-reply images
+
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   locality Locality @relation(fields: [localityId], references: [id], onDelete: Cascade)
   tag      Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)

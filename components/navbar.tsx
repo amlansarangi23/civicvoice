@@ -4,12 +4,15 @@ import { signOut, useSession } from "next-auth/react";
 import { useState, useRef, useEffect } from "react";
 import { Bell, User, Menu, X } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export const Navbar = () => {
   const { data: session, status } = useSession();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const router = useRouter();
 
   // Close user dropdown if clicked outside
   useEffect(() => {
@@ -66,7 +69,7 @@ export const Navbar = () => {
       {/* Right: Notifications & User Dropdown/Sign In */}
       <div className="flex items-center space-x-4">
         {/* Notification Bell */}
-        <button className="p-2 rounded-full hover:bg-gray-200">
+        <button onClick={()=> router.push("/citizenissues")} className="p-2 rounded-full hover:bg-gray-200">
           <Bell className="h-6 w-6 text-gray-700" />
         </button>
 
@@ -91,14 +94,15 @@ export const Navbar = () => {
                   </p>
                 </div>
                 <ul>
-                  <li>
+                  {session && session.user.type == "CITIZEN" && <li>
                     <Link
                       href="/citizenissues"
                       className="block px-4 py-2 text-slate-700 hover:bg-gray-100"
                     >
                       Issues
                     </Link>
-                  </li>
+                  </li>}
+                  
                   <li>
                     <button
                       onClick={() => signOut({ callbackUrl: "/" })}
