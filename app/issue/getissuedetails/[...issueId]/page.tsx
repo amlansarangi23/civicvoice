@@ -13,6 +13,7 @@ import {
   MessageSquare,
   X,
 } from "lucide-react";
+import { CldUploadWidget } from "next-cloudinary";
 
 import { upvotes } from "@prisma/client";
 
@@ -27,12 +28,13 @@ interface Issue {
   upvotes: number;
   adminReply: string | null;
   upvoters: upvotes[];
+  imageUrls: string[];
+  adminImageUrls: string[];
 }
 
 const IssuePage = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
-  // console.log(session);
   const params = useParams();
   const issueId: string = params.issueId as string;
 
@@ -41,11 +43,19 @@ const IssuePage = () => {
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [adminReply, setAdminReply] = useState("");
+  const [adminImageUrls, setAdminImageUrls] = useState<string[]>([]);
+
+  const handleImageUpload = (result: any) => {
+    if (result.event === "success") {
+      setAdminImageUrls([...adminImageUrls, result.info.secure_url]);
+    }
+  };
 
   const handleResolveIssue = async () => {
     const { data } = await axios.put("/api/admin/resolveissue", {
       issueId: issueId,
       adminReply: adminReply || null,
+      adminImageUrls: adminImageUrls,
     });
     console.log(data);
     setIsModalOpen(false);
@@ -121,6 +131,25 @@ const IssuePage = () => {
       </p>
       <p className="mt-4 text-gray-700 leading-relaxed">{issue.description}</p>
 
+      {/* Display Images */}
+      {issue.imageUrls && issue.imageUrls.length > 0 && (
+        <div className="mt-6">
+          <h3 className="text-lg font-semibold text-gray-800">
+            Uploaded Images:
+          </h3>
+          <div className="grid grid-cols-2 gap-4 mt-4">
+            {issue.imageUrls.map((url, index) => (
+              <img
+                key={index}
+                src={url}
+                alt={`Issue image ${index + 1}`}
+                className="w-full h-auto rounded-lg shadow-sm"
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="mt-4">
         <h3 className="text-lg font-semibold text-gray-800">Tags:</h3>
         <div className="flex flex-wrap gap-2 mt-2">
@@ -146,6 +175,25 @@ const IssuePage = () => {
         <div className="mt-6 p-4 border-l-4 border-blue-500 bg-blue-50">
           <h3 className="text-lg font-semibold text-blue-800">Admin Reply:</h3>
           <p className="text-gray-700 mt-2">{issue.adminReply}</p>
+
+          {/* Display Admin Images */}
+          {issue.adminImageUrls && issue.adminImageUrls.length > 0 && (
+            <div className="mt-6">
+              <h3 className="text-lg font-semibold text-gray-800">
+                Uploaded Images:
+              </h3>
+              <div className="grid grid-cols-2 gap-4 mt-4">
+                {issue.adminImageUrls.map((url, index) => (
+                  <img
+                    key={index}
+                    src={url}
+                    alt={`Issue image ${index + 1}`}
+                    className="w-full h-auto rounded-lg shadow-sm"
+                  />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
       {session && session?.user?.type === "ADMIN" && (
@@ -178,6 +226,38 @@ const IssuePage = () => {
               value={adminReply}
               onChange={(e) => setAdminReply(e.target.value)}
             />
+
+            <div className="mb-4">
+              <label className="block text-gray-700 font-medium mb-2">
+                Upload Images:
+              </label>
+
+              <CldUploadWidget
+                uploadPreset="dhaxrkotq"
+                onSuccess={handleImageUpload} // On successful upload, update image URLs
+              >
+                {({ open }) => (
+                  <button
+                    onClick={() => open()}
+                    className="bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600 transition"
+                  >
+                    Upload an Image
+                  </button>
+                )}
+              </CldUploadWidget>
+
+              <div className="mt-4">
+                {adminImageUrls.map((url, index) => (
+                  <img
+                    key={index}
+                    src={url}
+                    alt={`Uploaded ${index}`}
+                    className="w-full h-auto mt-2"
+                  />
+                ))}
+              </div>
+            </div>
+
             <button
               onClick={handleResolveIssue}
               className="mt-4 w-full bg-green-600 text-white py-2 rounded-lg shadow hover:bg-green-700 transition"

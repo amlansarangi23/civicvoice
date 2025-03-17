@@ -55,13 +55,13 @@ export const Navbar = () => {
             Dashboard
           </Link>
         )}
-        <Link href="/about" className="text-gray-700 hover:text-blue-600">
+        <Link href="/" className="text-gray-700 hover:text-blue-600">
           About Us
         </Link>
-        <Link href="/services" className="text-gray-700 hover:text-blue-600">
+        <Link href="/" className="text-gray-700 hover:text-blue-600">
           Services
         </Link>
-        <Link href="/contact" className="text-gray-700 hover:text-blue-600">
+        <Link href="/" className="text-gray-700 hover:text-blue-600">
           Contact Us
         </Link>
       </div>
@@ -70,7 +70,7 @@ export const Navbar = () => {
       <div className="flex items-center space-x-4">
         {/* Notification Bell */}
         <button onClick={()=> router.push("/citizenissues")} className="p-2 rounded-full hover:bg-gray-200">
-          <Bell className="h-6 w-6 text-gray-700" />
+          {session && session.user.type == 'CITIZEN' && <Bell className="h-6 w-6 text-gray-700" />}
         </button>
 
         {/* User Icon & Dropdown if signed in, else Sign In button */}
