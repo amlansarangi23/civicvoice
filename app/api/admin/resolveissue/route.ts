@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
 export async function PUT(req: NextRequest) {
-  const { issueId, adminReply } = await req.json();
+  const { issueId, adminReply, adminImageUrls } = await req.json();
   const resend = new Resend("re_bXmRF6H7_Hp1FD584W16iwc6YyTyV6uP8");
 
   if (issueId == null) {
@@ -21,6 +21,7 @@ export async function PUT(req: NextRequest) {
       data: {
         isResolved: true,
         adminReply: adminReply,
+        adminImageUrls: adminImageUrls,
       },
     });
 

@@ -34,6 +34,7 @@ export async function POST(req: NextRequest) {
         tagId: body.tagId,
         subTags: body.subTags,
         description: body.description,
+        imageUrls: body.imageUrls,
       },
     });
     return NextResponse.json({
