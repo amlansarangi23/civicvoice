@@ -70,7 +70,7 @@ const Dashboard = () => {
 
   return (
     <>
-      {session && session.user.type === "CITIZEN" ? (
+      {session && session.user?.type === "CITIZEN" ? (
         <div className="p-4 h-screen">
           {loading ? (
             <Loader />
