@@ -49,7 +49,8 @@ export const Footer = () => {
         </div> */}
         {/* Bottom Section: Copyright */}
         <div className="mt-8 text-center text-sm">
-          &copy; {new Date().getFullYear()} CivicVoice. All rights reserved.
+          &copy; {new Date().getFullYear()}  Made with &#x2665; by Amlan and
+          Sourav. All rights reserved.
         </div>
       </div>
     </footer>
