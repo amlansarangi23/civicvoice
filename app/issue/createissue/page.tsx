@@ -1,14 +1,27 @@
 "use client";
-export const dynamic = "force-dynamic";
-import React, { useState, useEffect } from "react";
+
+import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import axios from "axios";
 import { X } from "lucide-react";
 import { CldUploadWidget } from "next-cloudinary";
 
+// A wrapper component that uses useSearchParams and sets tagId after mounting
+const SearchParamsWrapper = ({
+  setTagId,
+}: {
+  setTagId: (tag: string) => void;
+}) => {
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const tag = searchParams.get("tagId") || "";
+    setTagId(tag);
+  }, [searchParams, setTagId]);
+  return null;
+};
+
 const CreateIssuePage = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [tagId, setTagId] = useState("");
   const [subject, setSubject] = useState("");
   const [description, setDescription] = useState("");
@@ -17,14 +30,6 @@ const CreateIssuePage = () => {
   const [loading, setLoading] = useState(false);
   const [sensitiveContentError, setSensitiveContentError] = useState("");
   const [imageUrls, setImageUrls] = useState<string[]>([]);
-
-  // Ensure tagId is set properly
-  useEffect(() => {
-    const id = searchParams.get("tagId");
-    if (id) {
-      setTagId(id);
-    }
-  }, [searchParams]);
 
   const handleAddSubtag = () => setSubTags([...subTags, ""]);
 
@@ -36,11 +41,10 @@ const CreateIssuePage = () => {
 
   const handleImageUpload = (result: any) => {
     if (result.event === "success") {
-      setImageUrls([...imageUrls, result.info.secure_url]);
+      setImageUrls((prev) => [...prev, result.info.secure_url]);
     }
   };
 
-  //-----IMPORTANT-----
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -65,7 +69,12 @@ const CreateIssuePage = () => {
 
   return (
     <div className="max-w-lg mx-auto my-10 p-6 bg-white rounded shadow text-black">
-      {/* Ensure tagId is included in redirect */}
+      {/* Wrap the search-params hook in Suspense so it doesn’t trigger pre-render errors */}
+      <Suspense fallback={<p>Loading...</p>}>
+        <SearchParamsWrapper setTagId={setTagId} />
+      </Suspense>
+
+      {/* Only redirect if tagId is available */}
       <X
         onClick={() => router.push(tagId ? `/tag/${tagId}` : "/")}
         className="float-end hover:bg-slate-500 rounded-full transition duration-150 cursor-pointer"
@@ -136,7 +145,7 @@ const CreateIssuePage = () => {
             Upload Images:
           </label>
 
-          {/* Prevent form submission when clicking Upload Image */}
+          {/* The button here has type="button" and prevents default to avoid form submission */}
           <CldUploadWidget
             uploadPreset="dhaxrkotq"
             onSuccess={handleImageUpload}
