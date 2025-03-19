@@ -5,6 +5,19 @@ import axios from "axios";
 import Loader from "@/components/Loader";
 import TagModal from "@/components/TagModal";
 import { useSession } from "next-auth/react";
+
+declare module "next-auth" {
+  interface Session {
+    user?: {
+      username?: string | null;
+      email?: string | null;
+      image?: string | null;
+      type?: string;
+      localityName?: string;
+    };
+  }
+}
+
 import { Trash2, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -113,11 +126,10 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 h-full">
               {tags.map((t: TagType) => (
                 <div
-                onClick={() => Router.push(`/tag/${t.id}`)}
-                key={t.id}
-                className="relative bg-slate-300 shadow-md rounded-lg border-2 border-slate-800 p-4 hover:scale-105 hover:cursor-pointer transition duration-200 w-2/3 mx-auto"
-              >
-              
+                  onClick={() => Router.push(`/tag/${t.id}`)}
+                  key={t.id}
+                  className="relative bg-slate-300 shadow-md rounded-lg border-2 border-slate-800 p-4 hover:scale-105 hover:cursor-pointer transition duration-200 w-2/3 mx-auto"
+                >
                   <h2 className="text-xl text-slate-800 font-bold mb-2">
                     {t.title}
                   </h2>
