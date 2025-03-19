@@ -1,27 +1,32 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import axios from "axios";
 import { X } from "lucide-react";
 import { CldUploadWidget } from "next-cloudinary";
 
-const CreateIssuePage = () => {
+const SearchParamsWrapper = ({ setTagId }: { setTagId: (tag: string) => void }) => {
   const searchParams = useSearchParams();
-  const router = useRouter();
-  const tagId = searchParams.get("tagId") || "";
+  React.useEffect(() => {
+    setTagId(searchParams.get("tagId") || "");
+  }, [searchParams, setTagId]);
 
+  return null; // This component only updates state, so it renders nothing
+};
+
+const CreateIssuePage = () => {
+  const router = useRouter();
+  const [tagId, setTagId] = useState("");
   const [subject, setSubject] = useState("");
   const [description, setDescription] = useState("");
   const [subTags, setSubTags] = useState<string[]>([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [sensitiveContentError, setSensitiveContentError] = useState(""); // New state
+  const [sensitiveContentError, setSensitiveContentError] = useState("");
   const [imageUrls, setImageUrls] = useState<string[]>([]);
 
-  const handleAddSubtag = () => {
-    setSubTags([...subTags, ""]);
-  };
+  const handleAddSubtag = () => setSubTags([...subTags, ""]);
 
   const handleSubtagChange = (index: number, value: string) => {
     const updatedSubTags = [...subTags];
@@ -42,15 +47,11 @@ const CreateIssuePage = () => {
     setSensitiveContentError("");
     try {
       const body = { subject, description, tagId, subTags, imageUrls };
-      const response = await axios.post("/api/citizen/createissue", body);
-      console.log(response.data);
+      await axios.post("/api/citizen/createissue", body);
       router.push(`/tag/${tagId}`);
     } catch (err: any) {
-      console.error(err);
       if (err.response && err.response.status === 400) {
-        setSensitiveContentError(
-          "Issue contains sensitive content and cannot be created."
-        );
+        setSensitiveContentError("Issue contains sensitive content and cannot be created.");
       } else {
         setError("Error creating issue");
       }
@@ -61,17 +62,19 @@ const CreateIssuePage = () => {
 
   return (
     <div className="max-w-lg mx-auto my-10 p-6 bg-white rounded shadow text-black">
+      <Suspense fallback={<p>Loading...</p>}>
+        <SearchParamsWrapper setTagId={setTagId} />
+      </Suspense>
+
       <X
         onClick={() => router.push(`/tag/${tagId}`)}
         className="float-end hover:bg-slate-500 rounded-full transition duration-150 cursor-pointer"
       />
       <h1 className="text-3xl font-semibold text-center mb-6">Create Issue</h1>
+
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label
-            htmlFor="subject"
-            className="block text-gray-700 font-medium mb-2"
-          >
+          <label htmlFor="subject" className="block text-gray-700 font-medium mb-2">
             Subject:
           </label>
           <input
@@ -83,11 +86,9 @@ const CreateIssuePage = () => {
             required
           />
         </div>
+
         <div className="mb-4">
-          <label
-            htmlFor="description"
-            className="block text-gray-700 font-medium mb-2"
-          >
+          <label htmlFor="description" className="block text-gray-700 font-medium mb-2">
             Description:
           </label>
           <textarea
@@ -99,10 +100,9 @@ const CreateIssuePage = () => {
             required
           />
         </div>
+
         <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-2">
-            Subtags:
-          </label>
+          <label className="block text-gray-700 font-medium mb-2">Subtags:</label>
           {subTags.map((subtag, index) => (
             <input
               key={index}
@@ -121,43 +121,28 @@ const CreateIssuePage = () => {
           >
             Add Subtag
           </button>
+        </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-700 font-medium mb-2">
-              Upload Images:
-            </label>
+        <div className="mb-4">
+          <label className="block text-gray-700 font-medium mb-2">Upload Images:</label>
 
-            <CldUploadWidget
-              uploadPreset="dhaxrkotq"
-              onSuccess={handleImageUpload} // On successful upload, update image URLs
-            >
-              {({ open }) => (
-                <button
-                  onClick={() => open()}
-                  className="bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600 transition"
-                >
-                  Upload an Image
-                </button>
-              )}
-            </CldUploadWidget>
+          <CldUploadWidget uploadPreset="dhaxrkotq" onSuccess={handleImageUpload}>
+            {({ open }) => (
+              <button onClick={() => open()} className="bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600 transition">
+                Upload an Image
+              </button>
+            )}
+          </CldUploadWidget>
 
-            <div className="mt-4">
-              {imageUrls.map((url, index) => (
-                <img
-                  key={index}
-                  src={url}
-                  alt={`Uploaded ${index}`}
-                  className="w-full h-auto mt-2"
-                />
-              ))}
-            </div>
+          <div className="mt-4">
+            {imageUrls.map((url, index) => (
+              <img key={index} src={url} alt={`Uploaded ${index}`} className="w-full h-auto mt-2" />
+            ))}
           </div>
         </div>
 
         {error && <p className="text-red-500 mb-4">{error}</p>}
-        {sensitiveContentError && (
-          <p className="text-red-500 mb-4">{sensitiveContentError}</p>
-        )}
+        {sensitiveContentError && <p className="text-red-500 mb-4">{sensitiveContentError}</p>}
 
         <div className="text-center">
           <button
