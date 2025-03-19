@@ -7,6 +7,8 @@ import { ThumbsUp } from "lucide-react";
 import { upvotes } from "@prisma/client";
 import { useSession } from "next-auth/react";
 
+
+
 type Issue = {
   id: string;
   subject: string;
@@ -15,6 +17,7 @@ type Issue = {
   upvoters: upvotes[];
   isResolved: boolean;
 };
+
 
 const IssuesPage = () => {
   const { data: session } = useSession();
@@ -107,7 +110,7 @@ const IssuesPage = () => {
         )}
       </div>
 
-      <div className="flex flex-row gap-4 justify-evenly">
+      <div className="flex flex-row flex-wrap gap-4 justify-evenly">
         {/* Sorting Dropdown */}
       <div className="flex justify-between items-center mb-4 text-black">
         <div>

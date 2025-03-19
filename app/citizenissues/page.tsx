@@ -153,6 +153,7 @@ const IssuesPage = () => {
             />
             <h2 className="text-xl font-semibold mb-4">Update Issue</h2>
             <input
+              
               type="text"
               className="w-full p-2 border rounded-lg mb-2"
               value={editingIssue.subject}

@@ -6,6 +6,18 @@ import { Bell, User, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+declare module "next-auth" {
+  interface Session {
+    user?: {
+      username?: string | null;
+      email?: string | null;
+      image?: string | null;
+      type?: string;
+      localityName?: string;
+    };
+  }
+}
+
 export const Navbar = () => {
   const { data: session, status } = useSession();
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -69,8 +81,13 @@ export const Navbar = () => {
       {/* Right: Notifications & User Dropdown/Sign In */}
       <div className="flex items-center space-x-4">
         {/* Notification Bell */}
-        <button onClick={()=> router.push("/citizenissues")} className="p-2 rounded-full hover:bg-gray-200">
-          {session && session.user.type == 'CITIZEN' && <Bell className="h-6 w-6 text-gray-700" />}
+        <button
+          onClick={() => router.push("/citizenissues")}
+          className="p-2 rounded-full hover:bg-gray-200"
+        >
+          {session && session.user?.type == "CITIZEN" && (
+            <Bell className="h-6 w-6 text-gray-700" />
+          )}
         </button>
 
         {/* User Icon & Dropdown if signed in, else Sign In button */}
@@ -86,23 +103,27 @@ export const Navbar = () => {
               <div className="absolute right-0 mt-2 w-56 bg-white border rounded-md shadow-lg z-10">
                 <div className="p-4 border-b">
                   <p className="font-semibold text-gray-900">
-                    {session.user.username}
+                    {session?.user?.username}
                   </p>
-                  <p className="text-sm text-gray-900">{session.user.email}</p>
                   <p className="text-sm text-gray-900">
-                    {session.user.localityName}
+                    {session?.user?.email}
+                  </p>
+                  <p className="text-sm text-gray-900">
+                    {session?.user?.localityName}
                   </p>
                 </div>
                 <ul>
-                  {session && session.user.type == "CITIZEN" && <li>
-                    <Link
-                      href="/citizenissues"
-                      className="block px-4 py-2 text-slate-700 hover:bg-gray-100"
-                    >
-                      Issues
-                    </Link>
-                  </li>}
-                  
+                  {session && session?.user?.type == "CITIZEN" && (
+                    <li>
+                      <Link
+                        href="/citizenissues"
+                        className="block px-4 py-2 text-slate-700 hover:bg-gray-100"
+                      >
+                        Issues
+                      </Link>
+                    </li>
+                  )}
+
                   <li>
                     <button
                       onClick={() => signOut({ callbackUrl: "/" })}
@@ -129,6 +150,14 @@ export const Navbar = () => {
       {mobileMenuOpen && (
         <div className="absolute top-full left-0 w-full bg-white shadow-md md:hidden">
           <div className="flex flex-col p-4 space-y-4">
+            {session && (
+              <Link
+                href="/dashboard"
+                className="text-gray-700 hover:text-blue-600"
+              >
+                Dashboard
+              </Link>
+            )}
             <Link
               href="/about"
               onClick={() => setMobileMenuOpen(false)}
