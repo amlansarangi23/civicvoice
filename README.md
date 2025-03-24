@@ -4,12 +4,16 @@ CivicVoice is a **community-driven grievance voicing platform** that enables res
 
 ## 🚀 Features
 
-- 🏙 **Resident Complaints** – Users can post grievances about their locality.  
-- ✅ **Admin Resolution Panel** – Locality admins can manage and resolve issues.  
-- 📷 **Image Uploads** – Attach images to complaints using Cloudinary.  
-- 🔑 **Secure Authentication** – Powered by NextAuth.  
-- 🔍 **Google API Integration** – Geolocation support for better issue tracking.  
-- 📊 **Real-time Status Updates** – Track progress of submitted complaints.  
+- 🏛 **Local Administration** – Government and NGO admins oversee and address issues within their localities, ensuring timely resolutions.  
+- 🏷 **Categorized Reporting** – Users can report issues under specific tags and subtags, providing detailed descriptions and images for clarity.  
+- 📸 **Resolution Proof** – Admins upload images as proof upon resolving issues, maintaining transparency and accountability.  
+- 📧 **Email Notifications** – Users receive email alerts when their reported issues are resolved, keeping them informed.  
+- 👍 **Upvote System** – Community members can upvote issues, helping prioritize those that matter most.  
+- 👤 **User Profiles** – Manage your reports and track the status of your submissions through personalized profiles.  
+- 🌍 **Local Community** – View issues in your neighborhood and stay informed to form a better-informed society.  
+- 🔒 **Secure Registration & Authentication** – User accounts are protected with secure authentication methods to ensure privacy and safety.  
+- 📱 **Mobile Accessibility** – Report and track issues on-the-go with our mobile-friendly platform.  
+ 
 
 ## 🛠 Tech Stack
 
@@ -18,6 +22,7 @@ CivicVoice is a **community-driven grievance voicing platform** that enables res
 - **Authentication**: NextAuth  
 - **File Storage**: Cloudinary  
 - **AI content checks**: Gemini
+- **Email alerts**: Resend
 
 
 ## 📦 Installation & Setup
@@ -25,7 +30,7 @@ CivicVoice is a **community-driven grievance voicing platform** that enables res
 ### 1️⃣ Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/civicvoice.git
+git clone https://github.com/amlansarangi23/civicvoice.git
 cd civicvoice
 ```
 
